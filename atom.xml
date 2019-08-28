@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://yakei.github.io/blog</id>
-    <title>Gridea</title>
-    <updated>2019-08-28T14:18:24.784Z</updated>
+    <title>Blog</title>
+    <updated>2019-08-28T14:19:53.025Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://yakei.github.io/blog"/>
     <link rel="self" href="https://yakei.github.io/blog/atom.xml"/>
     <subtitle>温故而知新</subtitle>
     <logo>https://yakei.github.io/blog/images/avatar.png</logo>
     <icon>https://yakei.github.io/blog/favicon.ico</icon>
-    <rights>All rights reserved 2019, Gridea</rights>
+    <rights>All rights reserved 2019, Blog</rights>
     <entry>
         <title type="html"><![CDATA[Hello Gridea]]></title>
         <id>https://yakei.github.io/blog/post/hello-gridea</id>
