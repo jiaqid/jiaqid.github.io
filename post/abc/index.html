@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>文章归档 | Blog</title>
+<title>SpringBoot使用本地锁搞定重复提交 | Blog</title>
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -23,6 +23,7 @@
 
   </head>
   <body>
+  
     <nav class="navbar border fixed split-nav">
   <div class="nav-brand">
     <h3><a href="https://jiaqid.github.io/">Blog</a></h3>
@@ -76,36 +77,31 @@
   </div>
 </nav>
 
-    
     <div id="top" class="row site">
       <div class="sm-12 md-8 col">
         <div class="paper">
-          
+          <article class="article">
+            <h1>SpringBoot使用本地锁搞定重复提交</h1>
+            <p class="article-meta">
+              2019-08-29
+              
+            </p>
+            
+            <div class="post-content">
+              <p>SpringBoot是为了简化Spring应用的创建，运行，调试，部署等一系列问题而诞生的产物，自动装配的特性让我们可以更好的关注业务本身而不是外部XML配置，我们只需遵循规范，引入相关的依赖就可以轻易的搭建出一个web工程。</p>
+<p>在平时开发中，如果网速比较慢的情况下，用户提交表单后，发现服务器半天都没有响应，那么用户可能会以为是自己没有提交表单，就会再点击提交按钮重复提交表单，我们开发中必须防止表单重复提交。</p>
+<p>利用自定义注解，SpringAop，GuavaCache实现表单防止重复提交（不适用于分布式）<br>
+<img src="https://jiaqid.github.io//post-images/1567086857107.png" alt=""></p>
 
-          <h2 class="archives-title">文章归档</h2>
-          <div class="archives-container">
-            
-              <h3 class="year" data-aos-delay="500">2019</h3>
-              
-                
-                  <article class="post">
-                    <a href="https://jiaqid.github.io//post/abc">
-                      <h4 class="post-title">
-                        SpringBoot使用本地锁搞定重复提交
-                      </h4>
-                    </a>
-                  </article>
-                
-              
-            
-          </div>
+            </div>
+          </article>
         </div>
-        <div class="row flex-edges">
-  
-  
-</div>
-
+        <div class="paper" data-aos="fade-in">
+          
+        </div>
+        
       </div>
+
       <div class="sm-12 md-4 col sidebar">
   <div class="paper info-container">
     <img src="https://jiaqid.github.io//images/avatar.png?v=1567086860655" class="no-responsive avatar">
@@ -153,6 +149,8 @@
   </div>
 </div>
 
+
+    </div>
 
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 

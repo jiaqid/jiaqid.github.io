@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://jiaqid.github.io/</id>
     <title>Blog</title>
-    <updated>2019-08-29T13:48:51.705Z</updated>
+    <updated>2019-08-29T13:54:26.880Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://jiaqid.github.io/"/>
     <link rel="self" href="https://jiaqid.github.io//atom.xml"/>
@@ -10,4 +10,16 @@
     <logo>https://jiaqid.github.io//images/avatar.png</logo>
     <icon>https://jiaqid.github.io//favicon.ico</icon>
     <rights>All rights reserved 2019, Blog</rights>
+    <entry>
+        <title type="html"><![CDATA[SpringBoot使用本地锁搞定重复提交]]></title>
+        <id>https://jiaqid.github.io//post/abc</id>
+        <link href="https://jiaqid.github.io//post/abc">
+        </link>
+        <updated>2019-08-29T13:49:48.000Z</updated>
+        <content type="html"><![CDATA[<p>SpringBoot是为了简化Spring应用的创建，运行，调试，部署等一系列问题而诞生的产物，自动装配的特性让我们可以更好的关注业务本身而不是外部XML配置，我们只需遵循规范，引入相关的依赖就可以轻易的搭建出一个web工程。</p>
+<p>在平时开发中，如果网速比较慢的情况下，用户提交表单后，发现服务器半天都没有响应，那么用户可能会以为是自己没有提交表单，就会再点击提交按钮重复提交表单，我们开发中必须防止表单重复提交。</p>
+<p>利用自定义注解，SpringAop，GuavaCache实现表单防止重复提交（不适用于分布式）<br>
+<img src="https://jiaqid.github.io//post-images/1567086857107.png" alt=""></p>
+]]></content>
+    </entry>
 </feed>
