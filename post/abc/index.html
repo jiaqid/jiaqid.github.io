@@ -7,7 +7,7 @@
 <meta name="description" content="温故而知新">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<link rel="shortcut icon" href="https://jiaqid.github.io//favicon.ico?v=1567087174318">
+<link rel="shortcut icon" href="https://jiaqid.github.io//favicon.ico?v=1567087559045">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link rel="stylesheet" href="https://unpkg.com/papercss@1.6.1/dist/paper.min.css" />
@@ -152,6 +152,139 @@
 	&lt;/build&gt;
 &lt;/project&gt;
 </code></pre>
+<pre><code>package com.example;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class Application {
+
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
+
+}
+</code></pre>
+<pre><code>package com.example.annotation;
+
+import java.lang.annotation.*;
+
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
+public @interface LocalLock {
+
+    String key() default &quot;&quot;;
+
+    /**
+     * 过期时间 由于用的guava暂时就忽略 集成redis需要用到
+     */
+    int expire() default 5;
+
+}
+</code></pre>
+<pre><code>package com.example.controller;
+
+import com.example.annotation.LocalLock;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping(&quot;/index&quot;)
+public class IndexController {
+
+    /**
+     *在接口上添加@LocalLock(key=&quot;index:arg[0]&quot;);意味着会将arg[0]
+     * 替换成第一个参数的值，生成后的新key将被缓存起来
+     */
+    @LocalLock(key = &quot;index:arg[0]&quot;)
+    @GetMapping
+    public String index(@RequestParam String token){
+        try {
+            Thread.sleep(3000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(token);
+        return &quot;success-&quot;+token;
+    }
+}
+</code></pre>
+<pre><code>package com.example.interceptor;
+
+import com.example.annotation.LocalLock;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.util.StringUtils;
+
+
+import java.lang.reflect.Method;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * Lock拦截器（AOP）
+ * 首先通过CacheBuilder.newBuilder()构建出缓存对象，设置好过期时间；
+ * 其目的就是为了防止因程序崩溃锁得不到释放（当然如果单机这种方式程序都炸了，锁早没了，
+ * 但这不妨碍写好
+ * 在具体的interceptor()方法上采用的是Around(环绕增强），所有带LocalLock注解的都将被
+ * 切面处理
+ * 如果想更为灵活，key的生成规则可以定义接口形式
+ * （可以参考org.springframework.cache.interceptor.KeyGenerator)
+ *
+ */
+@Aspect
+@Configuration
+public class LockMethodInterceptor {
+
+    private static final Cache&lt;String,Object&gt; CACHES= CacheBuilder.newBuilder()
+            .maximumSize(1000)//最大缓存1000个
+            .expireAfterWrite(5, TimeUnit.SECONDS)//设置写缓存后5秒过期
+            .build();
+
+    @Around(&quot;execution(public * *(..)) &amp;&amp; @annotation(com.example.annotation.LocalLock)&quot;)
+    public Object interceptor(ProceedingJoinPoint pjp){
+        MethodSignature signature= (MethodSignature) pjp.getSignature();
+        Method method=signature.getMethod();
+        LocalLock localLock=method.getAnnotation(LocalLock.class);
+        String key=getKey(localLock.key(),pjp.getArgs());
+        if(!StringUtils.isEmpty(key)){
+            if(CACHES.getIfPresent(key)!=null){
+                throw new RuntimeException(&quot;请勿重复请求&quot;);
+            }
+            //如果是第一次请求，就将key当前对象压入缓存中
+            CACHES.put(key,key);
+        }
+        try {
+            return pjp.proceed();
+        }catch (Throwable throwable){
+            throw new RuntimeException(&quot;服务器异常&quot;);
+        }finally {
+            CACHES.invalidate(key);
+        }
+    }
+
+    /**
+     * key的生成策略，如果想灵活可以写成接口与实现的方式
+     */
+    private String getKey(String keyExpress,Object[] args){
+        for(int i=0;i&lt;args.length;i++){
+            keyExpress=keyExpress.replace(&quot;arg[&quot;+i+&quot;]&quot;,args[i].toString());
+        }
+        return keyExpress;
+    }
+
+
+}
+</code></pre>
 
             </div>
           </article>
@@ -164,7 +297,7 @@
 
       <div class="sm-12 md-4 col sidebar">
   <div class="paper info-container">
-    <img src="https://jiaqid.github.io//images/avatar.png?v=1567087174318" class="no-responsive avatar">
+    <img src="https://jiaqid.github.io//images/avatar.png?v=1567087559045" class="no-responsive avatar">
     <div class="text-muted">温故而知新</div>
     <div class="social-container">
       
